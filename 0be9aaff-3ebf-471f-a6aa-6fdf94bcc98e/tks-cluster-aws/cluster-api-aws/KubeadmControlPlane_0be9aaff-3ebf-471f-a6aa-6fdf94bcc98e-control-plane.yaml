@@ -1,0 +1,32 @@
+# Source: cluster-api-aws/templates/kubeadm-control-plane.yaml
+kind: KubeadmControlPlane
+apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+metadata:
+  name: "0be9aaff-3ebf-471f-a6aa-6fdf94bcc98e-control-plane"
+  namespace: 0be9aaff-3ebf-471f-a6aa-6fdf94bcc98e
+spec:
+  replicas: 3
+  machineTemplate:
+    infrastructureRef:
+      apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+      kind: AWSMachineTemplate
+      name: "0be9aaff-3ebf-471f-a6aa-6fdf94bcc98e-control-plane"
+  kubeadmConfigSpec:
+    initConfiguration:
+      nodeRegistration:
+        name: '{{ ds.meta_data.local_hostname }}'
+        kubeletExtraArgs:
+          cloud-provider: aws
+    clusterConfiguration:
+      apiServer:
+        extraArgs:
+          cloud-provider: aws
+      controllerManager:
+        extraArgs:
+          cloud-provider: aws
+    joinConfiguration:
+      nodeRegistration:
+        name: '{{ ds.meta_data.local_hostname }}'
+        kubeletExtraArgs:
+          cloud-provider: aws
+  version: v1.22.5
